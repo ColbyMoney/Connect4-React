@@ -1,2 +1,2 @@
-# Tic-React-oe
-TicTacToe game with react
+# Connect4-React
+Connect 4 game with react
