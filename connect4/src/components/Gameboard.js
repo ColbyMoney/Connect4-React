@@ -8,26 +8,27 @@ function Square({ value, onSquareClick }) {
   );
 }
   
-function Board({ xIsNext, squares, onPlay }) {
+function Board({ player, onPlay }) {
+  var squares = Array.fill(Array.fill(7))(6);
   function handleClick(x, y) {
-    if (calculateWinner(squares) || squares[x][y]) {
+    if (calculateWinner(player, squares)) {
       return;
     }
     const nextSquares = squares.slice();
-    if (xIsNext) {
-      nextSquares[x][y] = 'X';
+    if (player === 1) {
+      nextSquares[x][y] = '1';
     } else {
-      nextSquares[x][y] = 'O';
+      nextSquares[x][y] = '2';
     }
     onPlay(nextSquares);
   }
 
-  var winner = calculateWinner(squares);
+  var winner = calculateWinner(player, squares);
   let status;
   if (winner) {
     status = 'Winner: ' + winner;
   } else {
-    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+    status = 'Next player: ' + (player ? 'X' : 'O');
   }
 
   //build the html for the squares in the gameboard so the bottom left corner is (0,0) for (x,y)
@@ -110,42 +111,17 @@ function Board({ xIsNext, squares, onPlay }) {
 }
 
 export default function Gameboard() {
-  /*const [history, setHistory] = useState([Array(7).fill(Array(6).fill(null))]);
-  const [currentMove, setCurrentMove] = useState(0, 0);
-  const xIsNext = currentMove % 2 === 0;
-  const currentSquares = history[currentMove];
+  let player = 1;
+  let currentSquares = Array(6).fill(Array(7).fill(0));
 
-  function handlePlay(nextSquares) {
-    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
-    setHistory(nextHistory);
-    setCurrentMove(nextHistory.length - 1);
+  function handlePlay(row, column, player) {
+    currentSquares[row][column] = player;
   }
-
-  function jumpTo(nextMove) {
-    setCurrentMove(nextMove);
-  }
-
-  const moves = history.map((squares, move) => {
-    let description;
-    if (move > 0) {
-      description = 'Go to move #' + move;
-    } else {
-      description = 'Go to game start';
-    }
-    return (
-      <li key={move}>
-        <button onClick={() => jumpTo(move)}>{description}</button>
-      </li>
-    );
-  });*/
 
   return (
     <div className="game">
       <div className="game-board">
-        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
-      </div>
-      <div className="game-info">
-        <ol>{moves}</ol>
+        <Board player={player} squares={currentSquares} onPlay={handlePlay()} />
       </div>
     </div>
   );
@@ -155,7 +131,7 @@ function calculateWinner(player, board) {
     // horizontalCheck 
     for (let j = 0; j < 6-3; j++ ){
       for (let i = 0; i < 7; i++){
-          if (board[i][j] == player && board[i][j+1] == player && board[i][j+2] == player && board[i][j+3] == player){
+          if (board[i][j] === player && board[i][j+1] === player && board[i][j+2] === player && board[i][j+3] === player){
               return true;
           }           
       }
@@ -163,7 +139,7 @@ function calculateWinner(player, board) {
   // verticalCheck
   for (let i = 0; i < 7-3; i++ ){
       for (let j = 0; j < 6; j++){
-          if (board[i][j] == player && board[i+1][j] == player && board[i+2][j] == player && board[i+3][j] == player){
+          if (board[i][j] === player && board[i+1][j] === player && board[i+2][j] === player && board[i+3][j] === player){
               return true;
           }           
       }
@@ -171,14 +147,14 @@ function calculateWinner(player, board) {
   // ascendingDiagonalCheck /
   for (let i=3; i < 7; i++){
       for (let j=0; j < 6-3; j++){
-          if (board[i][j] == player && board[i-1][j+1] == player && board[i-2][j+2] == player && board[i-3][j+3] == player)
+          if (board[i][j] === player && board[i-1][j+1] === player && board[i-2][j+2] === player && board[i-3][j+3] === player)
               return true;
       }
   }
   // descendingDiagonalCheck \
   for (let i=3; i < 7; i++){
       for (let j=3; j < 6; j++){
-          if (board[i][j] == player && board[i-1][j-1] == player && board[i-2][j-2] == player && board[i-3][j-3] == player)
+          if (board[i][j] === player && board[i-1][j-1] === player && board[i-2][j-2] === player && board[i-3][j-3] === player)
               return true;
       }
   }
