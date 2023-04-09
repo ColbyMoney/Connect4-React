@@ -22,7 +22,7 @@ function Board({ xIsNext, squares, onPlay }) {
     onPlay(nextSquares);
   }
 
-  const winner = calculateWinner(squares);
+  var winner = calculateWinner(squares);
   let status;
   if (winner) {
     status = 'Winner: ' + winner;
@@ -110,8 +110,8 @@ function Board({ xIsNext, squares, onPlay }) {
 }
 
 export default function Gameboard() {
-  const [history, setHistory] = useState([Array(7).fill(Array(6).fill(null))]);
-  const [currentMove, setCurrentMove] = useState(0);
+  /*const [history, setHistory] = useState([Array(7).fill(Array(6).fill(null))]);
+  const [currentMove, setCurrentMove] = useState(0, 0);
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
 
@@ -137,7 +137,7 @@ export default function Gameboard() {
         <button onClick={() => jumpTo(move)}>{description}</button>
       </li>
     );
-  });
+  });*/
 
   return (
     <div className="game">
@@ -151,22 +151,36 @@ export default function Gameboard() {
   );
 }
 
-function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
+function calculateWinner(player, board) {
+    // horizontalCheck 
+    for (let j = 0; j < 6-3; j++ ){
+      for (let i = 0; i < 7; i++){
+          if (board[i][j] == player && board[i][j+1] == player && board[i][j+2] == player && board[i][j+3] == player){
+              return true;
+          }           
+      }
   }
-  return null;
+  // verticalCheck
+  for (let i = 0; i < 7-3; i++ ){
+      for (let j = 0; j < 6; j++){
+          if (board[i][j] == player && board[i+1][j] == player && board[i+2][j] == player && board[i+3][j] == player){
+              return true;
+          }           
+      }
+  }
+  // ascendingDiagonalCheck /
+  for (let i=3; i < 7; i++){
+      for (let j=0; j < 6-3; j++){
+          if (board[i][j] == player && board[i-1][j+1] == player && board[i-2][j+2] == player && board[i-3][j+3] == player)
+              return true;
+      }
+  }
+  // descendingDiagonalCheck \
+  for (let i=3; i < 7; i++){
+      for (let j=3; j < 6; j++){
+          if (board[i][j] == player && board[i-1][j-1] == player && board[i-2][j-2] == player && board[i-3][j-3] == player)
+              return true;
+      }
+  }
+  return false;
 }
