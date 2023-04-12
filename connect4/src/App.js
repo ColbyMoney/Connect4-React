@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import Gameboard from './components/Gameboard';
+import Gameboard from './components/Game';
 
 function App() {
   return (
